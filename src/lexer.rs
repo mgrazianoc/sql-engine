@@ -71,7 +71,7 @@ mod tests {
     use super::Lexer;
 
     #[test]
-    fn simple_select_1(){
+    fn select_star(){
         let query = "SELECT * FROM TABLE_NAME;";
         let query_chars: Vec<char> = query.chars().collect();
         let tokens: Vec<&[char]> = Lexer::new(&query_chars).collect();
@@ -83,7 +83,7 @@ mod tests {
     }
 
     #[test]
-    fn simple_select_2(){
+    fn simple_select(){
         let query = "SELECT COLUMN_A, COLUMN_B FROM TABLE_NAME;";
         let query_chars: Vec<char> = query.chars().collect();
         let tokens: Vec<&[char]> = Lexer::new(&query_chars).collect();
