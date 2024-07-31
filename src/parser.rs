@@ -38,6 +38,7 @@ impl <'t, 'c> Iterator for Parser<'t, 'c> {
     }
 }
 
+#[cfg(test)]
 mod tests {
     use regex::Regex;
 
