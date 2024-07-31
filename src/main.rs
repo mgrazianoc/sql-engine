@@ -1,6 +1,7 @@
 pub mod lexer;
 pub mod types;
 pub mod parser;
+pub mod dql_builder;
 pub mod interpreter;
 
 // let query = "SELECT ...";
