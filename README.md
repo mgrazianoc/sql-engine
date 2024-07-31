@@ -10,7 +10,7 @@ This is personal project for studying how one can construct a SQL engine, while 
 - [ ] `DqlTreeTransformer`, responsible for spanning options for manipulating valid DqlTree into others DqlTree;
 - [ ] `Optimizer`, responsible for some optimizations in the query;
 
-## Lexer Examples
+## Lexer Example
 
 ```rs
 let query = r#"
@@ -40,7 +40,7 @@ assert_eq!(trimmed_tokens, vec![
 ])
 ```
 
-## Parser Examples
+## Parser Example
 ```rs
 let query = r#"
     WITH CTE AS (
@@ -89,4 +89,48 @@ assert_eq!(tokens, vec![
     Token { token_type: TokenType::Number, value: "42".to_string() },
     Token { token_type: TokenType::Delimiter, value: ";".to_string() },
 ])
+```
+
+## DqlTreeBuilder Example
+
+```rs
+let query = "SELECT COLUMN_A, COLUMN_B FROM TABLE_NAME;";
+let query_chars: Vec<char> = query.chars().collect();
+let raw_tokens: Vec<&[char]> = Lexer::new(&query_chars).collect();
+
+let tokens: Vec<Token> = Parser::new(&raw_tokens).collect();
+
+let result = DqlBuilder::new(&tokens).build();
+assert!(result.is_ok());
+
+let dql_tree = result.unwrap();
+assert_eq!(
+    dql_tree,
+    DqlTree(
+        vec![
+            DqlNode {
+                node_type: DqlNodeType::Select,
+                content: vec![
+                    DqlContent::Tokens(
+                        vec![
+                            Token { token_type: TokenType::Identifier, value: "COLUMN_A".to_string() },
+                            Token { token_type: TokenType::Delimiter, value: ",".to_string() },
+                            Token { token_type: TokenType::Asterisk, value: "COLUMN_B".to_string() }
+                        ]
+                    )
+                ]
+            },
+            DqlNode {
+                node_type: DqlNodeType::From,
+                content: vec![
+                    DqlContent::Tokens(
+                        vec![
+                            Token { token_type: TokenType::Identifier, value: "TABLE_NAME".to_string() },
+                        ]
+                    )
+                ]
+            }
+        ]
+    )
+)
 ```
