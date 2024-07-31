@@ -18,12 +18,12 @@ impl fmt::Display for SyntaxError {
 impl Error for SyntaxError {}
 
 pub struct Interpreter <'t> {
-    tokens: &'t [Token]
+    _tokens: &'t [Token]
 }
 
 impl<'t> Interpreter<'t> {
     pub fn new(tokens: &'t [Token]) -> Self {
-        Self { tokens }
+        Self { _tokens: tokens }
     }
 
     pub fn validate(&self) -> Result<(), DQLError> {

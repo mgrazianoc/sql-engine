@@ -8,7 +8,7 @@ pub mod interpreter;
 // 1. Lexer(&query) -> [raw_tokens]
 // 2. Parser([tokens]) -> [TOKENS]
 // 3. DqlBuilder([TOKENS]) -> DqlTree
-// 4. Interpreter(DqlTree) -> bool
+// 4. Interpreter(DqlTree) -> Result<(), DQLError>
 // 5. Optimizer(DqlTree) -> DqlTree
 
 fn main() {
