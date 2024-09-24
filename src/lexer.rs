@@ -42,19 +42,13 @@ impl <'c> Lexer<'c> {
             return None
         }
 
-        // 123th -[mapped]-> 123
-        if self.content[0].is_numeric() {
-            return Some(self.chope_while(|c| c.is_numeric()));
-        }
-
-        // Life_42 -[mapped]-> Life_42. TODO: check for all cases here
-        if self.content[0].is_alphabetic() {
+        if self.content[0].is_alphanumeric() {
             return Some(self.chope_while(|c| c.is_alphanumeric() || *c == '_'));
         }
 
         // Here, we need to catch all non aphabetic symbols
-        // catching ||, | |, ::, <=, < =, >, >=, > =
-        return Some(self.chope_while(|c| !c.is_alphanumeric() || c.is_whitespace()))
+        // catching ||, ::, <=, >, >=
+        return Some(self.chope_while(|c| !c.is_alphanumeric()))
     }
 }
 
@@ -108,14 +102,14 @@ mod tests {
 
     #[test]
     fn simple_where_spaced_operators(){
-        let query = "SELECT COLUMN_A, COLUMN_B FROM TABLE_NAME WHERE COLUMN_A > = 42;";
+        let query = "SELECT COLUMN_A, COLUMN_B FROM TABLE_NAME WHERE COLUMN_A >= 42;";
         let query_chars: Vec<char> = query.chars().collect();
         let tokens: Vec<&[char]> = Lexer::new(&query_chars).collect();
 
         let owned_tokens: Vec<String> = tokens.into_iter().map(|chars| chars.iter().collect()).collect();
         let trimmed_tokens: Vec<&str> = owned_tokens.iter().map(|c| c.trim()).collect();
 
-        assert_eq!(trimmed_tokens, vec!["SELECT", "COLUMN_A", ",", "COLUMN_B", "FROM", "TABLE_NAME", "WHERE", "COLUMN_A", "> =", "42", ";",])
+        assert_eq!(trimmed_tokens, vec!["SELECT", "COLUMN_A", ",", "COLUMN_B", "FROM", "TABLE_NAME", "WHERE", "COLUMN_A", ">=", "42", ";",])
     }
 
     #[test]
@@ -132,7 +126,7 @@ mod tests {
                 COLUMN_A,
                 COLUMN_B
             FROM CTE
-            WHERE COLUMN_A > = 42;
+            WHERE COLUMN_A >= 42;
         "#;
         let query_chars: Vec<char> = query.chars().collect();
         let tokens: Vec<&[char]> = Lexer::new(&query_chars).collect();
@@ -142,7 +136,7 @@ mod tests {
 
         assert_eq!(trimmed_tokens, vec![
             "WITH", "CTE", "AS", "(", "SELECT", "COLUMN_A", ",", "COLUMN_B", ",", "COLUMN_C", "FROM", "TABLE_NAME", ")",
-            "SELECT", "COLUMN_A", ",", "COLUMN_B", "FROM", "CTE", "WHERE", "COLUMN_A", "> =", "42", ";"
+            "SELECT", "COLUMN_A", ",", "COLUMN_B", "FROM", "CTE", "WHERE", "COLUMN_A", ">=", "42", ";"
         ])
     }
 
