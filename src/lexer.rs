@@ -48,7 +48,7 @@ impl <'c> Lexer<'c> {
 
         // Here, we need to catch all non aphabetic symbols
         // catching ||, ::, <=, >, >=
-        return Some(self.chope_while(|c| !c.is_alphanumeric()))
+        return Some(self.chope_while(|c| !c.is_alphanumeric() && !c.is_whitespace()))
     }
 }
 
@@ -165,7 +165,7 @@ mod tests {
         assert_eq!(trimmed_tokens, vec![
             "SELECT", "COLUMN_A", ",", "COLUMN_B", "FROM",
             "(", "SELECT", "COLUMN_A", ",", "COLUMN_B", ",", "COLUMN_C", "FROM", "TABLE_NAME", "WHERE", "COLUMN_B", "<=", "42", ")",
-            "WHERE", "COLUMN_A", "> =", "42", ";"
+            "WHERE", "COLUMN_A", ">", "=", "42", ";"
         ])
     }
 
